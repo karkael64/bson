@@ -1,6 +1,5 @@
 const fs = require('fs');
 const pt = require('path');
-const Event = require('../../libraries/event.class.sjs');
 
 function is_function(el) {
     return (typeof el === 'function');
