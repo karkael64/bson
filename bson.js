@@ -1,5 +1,16 @@
-const type = require( 'types' );
 const File = require( './file' );
+
+function is_function(el) {
+	return (typeof el === 'function');
+}
+
+function is_number(el) {
+	return (typeof el === 'number');
+}
+
+function is_object(el) {
+	return (typeof el === 'object') && (el !== null);
+}
 
 /**
  * @class BSON is a class for reading/writing files in BSON format, with NoSQL methods.
@@ -21,17 +32,17 @@ class BSON {
 		this.file = File.build( BSON.FOLDER + this.constructor.name + '.bson' );
 		this.sync_date = null;
 
-		if( type.is_number( id_or_data ) ) {
+		if( is_number( id_or_data ) ) {
 			this.data = {"id":id_or_data};
-			if( type.is_function( next ) )
+			if( is_function( next ) )
 				this.load( next );
 		}
 		else {
-			if( type.is_object( id_or_data ) )
+			if( is_object( id_or_data ) )
 				this.data = id_or_data;
 			else
 				this.data = {};
-			if( type.is_function( next ) )
+			if( is_function( next ) )
 				next();
 		}
 	}
@@ -46,7 +57,7 @@ class BSON {
 		let id = this.data.id,
 			self = this,
 			done = false;
-		if( type.is_function( next ) && type.is_number( id )) {
+		if( is_function( next ) && is_number( id )) {
 			this.file.readEachLine( ( err, line, then ) =>{
 				if( err ) return next( err );
 				if( !done ) {
@@ -72,7 +83,7 @@ class BSON {
 	 */
 
 	save( next ) {
-		if( type.is_function( next ) ) {
+		if( is_function( next ) ) {
 			let s = this,
 				self = s.data;
 			if( this.data.id ) {
@@ -131,7 +142,7 @@ class BSON {
 
 	select( each, next ) {
 
-		if( type.is_function( each ) && type.is_function( next ) ){
+		if( is_function( each ) && is_function( next ) ){
 			this.file.readEachLine( ( err, line, then ) => {
 				each( err, JSON.parse( line ), then );
 			}, next );
@@ -149,7 +160,7 @@ class BSON {
 	 */
 
 	update( each, next ) {
-		if( type.is_function( each ) && type.is_function( next ) ){
+		if( is_function( each ) && is_function( next ) ){
 			this.file.replaceEachLine( ( err, line, push ) => {
 				each( err, JSON.parse( line ), ( data )=>{
 					if( data === BSON.UPDATE_REMOVE )
@@ -174,7 +185,7 @@ class BSON {
 	 */
 
 	insert( data, next ) {
-		if( type.is_object( data ) && type.is_function( next ) ) {
+		if( is_object( data ) && is_function( next ) ) {
 			var self = this;
 			this.nextId( ( err, id ) => {
 				if( err ) return next( err );
@@ -194,7 +205,7 @@ class BSON {
 	 */
 
 	nextId( next ) {
-		if( type.is_function( next ) ) {
+		if( is_function( next ) ) {
 			let max = 1;
 			this.file.readEachLine( ( err, line, then ) => {
 				if( err ) return next( err );
