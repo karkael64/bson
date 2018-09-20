@@ -1,6 +1,6 @@
 {
   "name": "bson",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A class for reading/writing file in BSON not encrypted with high performance",
   "main": "bson.js",
   "scripts": {
